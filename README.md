@@ -1,4 +1,5 @@
-Symfony
+Homework by tutorial OpenClassrooms. PHP Framework Symfony 3.
 =======
 
-A Symfony project created on October 25, 2016, 8:37 am.
+Project: Board of ads.
+Thanks to <a href="https://openclassrooms.com/membres/winzou-49228">Alexandre Bacco</a> and OpenClassrooms.com for this <a href="https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony">nice tutorial about Symfony</a>.
