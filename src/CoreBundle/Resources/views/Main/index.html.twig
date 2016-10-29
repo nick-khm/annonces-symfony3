@@ -1,0 +1,14 @@
+{% extends 'CoreBundle::layout.html.twig' %}
+
+{% block title %} Main page {% endblock %}
+
+{% block menu %}
+{{parent()}}
+{% endblock %}
+
+{% block content %}
+    <h2>Page d'accueil</h2>
+    <h4>Dernières annonces</h4>
+    {{ render(controller("OCPlatformBundle:Advert:menu", {'limit': 3})) }}
+    <a href="{{ path('oc_platform_home') }}">Toutes les annonces >></a>
+{% endblock %}

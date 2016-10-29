@@ -1,18 +1,26 @@
-{% extends "::layout.html.twig" %}
+{% extends "CoreBundle::layout.html.twig" %}
 
 {% block title %}
-  Annonces - {{ parent() }}
+Annonces - {{ parent() }}
 {% endblock %}
 
-{% block body %}
-
-  {# On définit un sous-titre commun à toutes les pages du bundle, par exemple #}
-  <h1>Annonces</h1>
-
-  <hr>
-
-  {# On définit un nouveau bloc, que les vues du bundle pourront remplir #}
-  {% block ocplatform_body %}
-  {% endblock %}
-
+{% block menu %}
+<h3>Les annonces</h3>
+<ul class="nav nav-pills nav-stacked">
+    <li><a href="{{ path('core_homepage') }}">Accueil</a></li>
+    <li><a href="{{ path('oc_platform_home') }}">Annonces</a></li>
+    <li><a href="{{ path('oc_platform_add') }}">Ajouter une annonce</a></li>
+</ul>
+<h4>Dernières annonces</h4>
+{{ render(controller("OCPlatformBundle:Advert:menu", {'limit': 3})) }}
 {% endblock %}
+
+{% block content %}
+    {# On définit un sous-titre commun à toutes les pages du bundle, par exemple #}
+    <h1>Annonces</h1>
+    <hr>
+    {# On définit un nouveau bloc, que les vues du bundle pourront remplir #}
+    {% block ocplatform_body %}
+    {% endblock %}
+{% endblock %}
+{% block body %}{{parent()}}{% endblock %}
