@@ -7,5 +7,6 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class OCPlatformBundle extends Bundle
 {
     public function test()
-    {    }
+    {
+    }
 }
