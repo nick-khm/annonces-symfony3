@@ -16,10 +16,7 @@ class MainController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $session = $request->getSession();
-        $flash_msgs = $session->get('flash_msgs');
-        $session->remove('flash_msgs');
-        return $this->render('CoreBundle:Main:index.html.twig', array('flash_msgs' => $flash_msgs));
+        return $this->render('CoreBundle:Main:index.html.twig');
     }
 
     /**
@@ -30,7 +27,7 @@ class MainController extends Controller
     public function contactAction(Request $request)
     {
         $session = $request->getSession();
-        $session->set('flash_msgs', array('contact'=>"La page de contact n'est pas encore disponible, merci de revenir plus tard."));
+        $session->getFlashBag()->add('flash_msgs', "La page de contact n'est pas encore disponible, merci de revenir plus tard.");
         return $this->redirectToRoute('core_homepage');
     }
 }

@@ -28,11 +28,9 @@
         </div>
 
         {% block flash_msgs %}
-            {% if flash_msgs is defined %}
-                {% for msg in flash_msgs %}
-                <div class="alert alert-success">{{msg}}</div>
-                {% endfor %}
-            {% endif %}
+            {% for msg in app.session.flashbag.get('flash_msgs') %}
+            <div class="alert alert-success">{{msg}}</div>
+            {% endfor %}
         {% endblock %}
         <div class="row">
             {% block body %}
