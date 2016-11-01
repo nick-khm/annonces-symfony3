@@ -8,24 +8,33 @@
 
   <h2>{{ advert.title }}</h2>
   <i>Par {{ advert.author }}, le {{ advert.date|date('d/m/Y') }}</i>
-
-  <div class="well">
-    {{ advert.content }}
-  </div>
-
+  
   {# On vérifie qu'une image soit bien associée à l'annonce #}
   {% if advert.image is not null %}
     <img src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
   {% endif %}
 
-<ul class="list-group">
-  {% for candidat in listApplications %}
-  <li class="list-group-item">
-    <p>{{candidat.content}}</p>
-    <a href="#">{{candidat.author}}</a>
-  </li>
-  {% endfor %}
-</ul>
+  <div class="well">
+    {{ advert.content }}
+  </div>
+
+  {% if not advert.categories.empty %}
+    <p>
+      Cette annonce est parue dans les catégories suivantes :
+      {% for category in advert.categories %}
+        {{ category.name }}{% if not loop.last %}, {% endif %}
+      {% endfor %}
+    </p>
+  {% endif %}
+
+  <ul class="list-group">
+    {% for candidat in listApplications %}
+    <li class="list-group-item">
+      <p>{{candidat.content}}</p>
+      <a href="#">{{candidat.author}}</a>
+    </li>
+    {% endfor %}
+  </ul>
 
   <p>
     <a href="{{ path('oc_platform_home') }}" class="btn btn-default">

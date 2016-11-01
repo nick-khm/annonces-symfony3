@@ -56,6 +56,7 @@ class Advert
 
     /**
      * @ORM\OneToOne(targetEntity="OC\PlatformBundle\Entity\Image", cascade={"persist"})
+     * @ORM\JoinColumn(onDelete="set null")
      */
     private $image;
 
