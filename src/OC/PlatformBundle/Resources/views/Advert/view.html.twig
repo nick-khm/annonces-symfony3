@@ -13,6 +13,20 @@
     {{ advert.content }}
   </div>
 
+  {# On vérifie qu'une image soit bien associée à l'annonce #}
+  {% if advert.image is not null %}
+    <img src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
+  {% endif %}
+
+<ul class="list-group">
+  {% for candidat in listApplications %}
+  <li class="list-group-item">
+    <p>{{candidat.content}}</p>
+    <a href="#">{{candidat.author}}</a>
+  </li>
+  {% endfor %}
+</ul>
+
   <p>
     <a href="{{ path('oc_platform_home') }}" class="btn btn-default">
       <i class="glyphicon glyphicon-chevron-left"></i>

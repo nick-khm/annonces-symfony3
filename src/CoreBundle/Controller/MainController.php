@@ -27,7 +27,8 @@ class MainController extends Controller
     public function contactAction(Request $request)
     {
         $session = $request->getSession();
-        $session->getFlashBag()->add('flash_msgs', "La page de contact n'est pas encore disponible, merci de revenir plus tard.");
+        $session->getFlashBag()
+            ->add('flash_msgs', "La page de contact n'est pas encore disponible, merci de revenir plus tard.");
         return $this->redirectToRoute('core_homepage');
     }
 }

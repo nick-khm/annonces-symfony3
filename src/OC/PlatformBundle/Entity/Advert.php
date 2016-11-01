@@ -55,9 +55,15 @@ class Advert
     private $published = true;
 
     /**
-     * @ORM\Column(name="test", type="boolean")
+     * @ORM\OneToOne(targetEntity="OC\PlatformBundle\Entity\Image", cascade={"persist"})
      */
-    private $test = true;
+    private $image;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="OC\PlatformBundle\Entity\Category", cascade={"persist"})
+     * @ORM\JoinTable(name="oc_advert_category")
+     */
+    private $categories;
 
     public function __construct()
     {
@@ -195,27 +201,62 @@ class Advert
         return $this->published;
     }
 
+
     /**
-     * Set test
+     * Set image
      *
-     * @param boolean $test
+     * @param \OC\PlatformBundle\Entity\Image $image
      *
      * @return Advert
      */
-    public function setTest($test)
+    public function setImage(\OC\PlatformBundle\Entity\Image $image = null)
     {
-        $this->test = $test;
+        $this->image = $image;
 
         return $this;
     }
 
     /**
-     * Get test
+     * Get image
      *
-     * @return boolean
+     * @return \OC\PlatformBundle\Entity\Image
      */
-    public function getTest()
+    public function getImage()
     {
-        return $this->test;
+        return $this->image;
+    }
+
+    /**
+     * Add category
+     *
+     * @param \OC\PlatformBundle\Entity\Category $category
+     *
+     * @return Advert
+     */
+    public function addCategory(\OC\PlatformBundle\Entity\Category $category)
+    {
+        $this->categories[] = $category;
+
+        return $this;
+    }
+
+    /**
+     * Remove category
+     *
+     * @param \OC\PlatformBundle\Entity\Category $category
+     */
+    public function removeCategory(\OC\PlatformBundle\Entity\Category $category)
+    {
+        $this->categories->removeElement($category);
+    }
+
+    /**
+     * Get categories
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCategories()
+    {
+        return $this->categories;
     }
 }

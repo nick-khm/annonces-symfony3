@@ -6,13 +6,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use OC\PlatformBundle\Entity\Advert;
+use OC\PlatformBundle\Entity\Image;
+use OC\PlatformBundle\Entity\Application;
 
 class AdvertController extends Controller
 {
     public function menuAction($limit)
     {
         // On fixe en dur une liste ici, bien entendu par la suite
-    // on la récupérera depuis la BDD !
+        // on la récupérera depuis la BDD !
         $listAdverts = array(
           array('id' => 2, 'title' => 'Recherche développeur Symfony'),
           array('id' => 5, 'title' => 'Mission de webmaster'),
@@ -60,13 +62,11 @@ class AdvertController extends Controller
     public function viewAction($id)
     {
         // On récupère le repository
-        $repository = $this->getDoctrine()
-          ->getManager()
-          ->getRepository('OCPlatformBundle:Advert')
-        ;
+        $em = $this->getDoctrine()
+          ->getManager();
 
         // On récupère l'entité correspondante à l'id $id
-        $advert = $repository->find($id);
+        $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
 
         // $advert est donc une instance de OC\PlatformBundle\Entity\Advert
         // ou null si l'id $id  n'existe pas, d'où ce if :
@@ -74,26 +74,73 @@ class AdvertController extends Controller
             throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
         }
 
+        // On récupère la liste des candidatures de cette annonce
+        $listApplications = $em
+          ->getRepository('OCPlatformBundle:Application')
+          ->findBy(array('advert' => $advert));
+
         return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
-        'advert' => $advert
+        'advert' => $advert,
+        'listApplications' => $listApplications
         ));
     }
 
     public function addAction(Request $request)
     {
+        /*// On récupère l'EntityManager
+        $em = $this->getDoctrine()->getManager();
+
+        $image = new Image();
+        $image->setUrl('testurl.com');
+        $image->setAlt('alt test');
+        // $em->persist($image); pas besoin vue que cascade={"persist"} dans l'image de l'entite advert
+        
         // Création de l'entité
+        $advert = new Advert();
+        $advert->setTitle('Node.JS');
+        $advert->setAuthor('Nick');
+        $advert->setContent("Developpeur NodeJS sur Caen.");
+        $advert->setImage($image);
+        // On peut ne pas définir ni la date ni la publication,
+        // car ces attributs sont définis automatiquement dans le constructeur
+
+
+        // Étape 1 : On « persiste » l'entité
+        $em->persist($advert);
+
+        // Étape 2 : On « flush » tout ce qui a été persisté avant
+        $em->flush();*/
+
+        // Création de l'entité Advert
         $advert = new Advert();
         $advert->setTitle('Recherche développeur Symfony.');
         $advert->setAuthor('Alexandre');
         $advert->setContent("Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…");
-        // On peut ne pas définir ni la date ni la publication,
-        // car ces attributs sont définis automatiquement dans le constructeur
+
+        // Création d'une première candidature
+        $application1 = new Application();
+        $application1->setAuthor('Marine');
+        $application1->setContent("J'ai toutes les qualités requises.");
+
+        // Création d'une deuxième candidature par exemple
+        $application2 = new Application();
+        $application2->setAuthor('Pierre');
+        $application2->setContent("Je suis très motivé.");
+
+        // On lie les candidatures à l'annonce
+        $application1->setAdvert($advert);
+        $application2->setAdvert($advert);
 
         // On récupère l'EntityManager
         $em = $this->getDoctrine()->getManager();
 
         // Étape 1 : On « persiste » l'entité
         $em->persist($advert);
+
+        // Étape 1 ter : pour cette relation pas de cascade lorsqu'on persiste Advert, car la relation est
+        // définie dans l'entité Application et non Advert. On doit donc tout persister à la main ici.
+        $em->persist($application1);
+        $em->persist($application2);
 
         // Étape 2 : On « flush » tout ce qui a été persisté avant
         $em->flush();
@@ -131,5 +178,25 @@ class AdvertController extends Controller
     public function deleteAction($id)
     {
         return $this->render('OCPlatformBundle:Advert:delete.html.twig');
+    }
+
+    public function editImageAction($advertId)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+      // On récupère l'annonce
+        $advert = $em->getRepository('OCPlatformBundle:Advert')->find($advertId);
+
+      // On modifie l'URL de l'image par exemple
+        $advert->getImage()->setUrl('test.png');
+
+      // On n'a pas besoin de persister l'annonce ni l'image.
+      // Rappelez-vous, ces entités sont automatiquement persistées car
+      // on les a récupérées depuis Doctrine lui-même
+      
+      // On déclenche la modification
+        $em->flush();
+
+        return new Response('OK');
     }
 }
