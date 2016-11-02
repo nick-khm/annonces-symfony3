@@ -8,18 +8,24 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use OC\PlatformBundle\Entity\Advert;
 use OC\PlatformBundle\Entity\Image;
 use OC\PlatformBundle\Entity\Application;
+use OC\PlatformBundle\Entity\AdvertSkill;
+
+// use OC\PlatformBundle\Entity\Skill;
 
 class AdvertController extends Controller
 {
     public function menuAction($limit)
     {
-        // On fixe en dur une liste ici, bien entendu par la suite
+        /*// On fixe en dur une liste ici, bien entendu par la suite
         // on la récupérera depuis la BDD !
         $listAdverts = array(
           array('id' => 2, 'title' => 'Recherche développeur Symfony'),
           array('id' => 5, 'title' => 'Mission de webmaster'),
           array('id' => 9, 'title' => 'Offre de stage webdesigner')
-          );
+          );*/
+
+        $em = $this->getDoctrine()->getManager();
+        $listAdverts = $em->getRepository('OCPlatformBundle:Advert')->findAll();
 
         return $this->render('OCPlatformBundle:Advert:menu.html.twig', array(
           // Tout l'intérêt est ici : le contrôleur passe
@@ -34,7 +40,7 @@ class AdvertController extends Controller
      */
     public function indexAction()
     {
-        $listAdverts = array(
+        /*$listAdverts = array(
             array(
         'title' => 'Recherche développpeur Symfony',
         'id' => 1,
@@ -53,7 +59,9 @@ class AdvertController extends Controller
         'author' => 'Mathieu',
         'content' => 'Nous proposons un poste pour webdesigner. Blabla…',
         'date' => new \Datetime(), ),
-        );
+        );*/
+        $em = $this->getDoctrine()->getManager();
+        $listAdverts = $em->getRepository('OCPlatformBundle:Advert')->findAll();
 
         return $this->render('OCPlatformBundle:Advert:index.html.twig', array(
         'listAdverts' => $listAdverts));
@@ -61,7 +69,7 @@ class AdvertController extends Controller
 
     public function viewAction($id)
     {
-        // On récupère le repository
+        /*// On récupère le repository
         $em = $this->getDoctrine()
           ->getManager();
 
@@ -82,6 +90,37 @@ class AdvertController extends Controller
         return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
         'advert' => $advert,
         'listApplications' => $listApplications
+        ));*/
+
+        $em = $this->getDoctrine()->getManager();
+
+        // On récupère l'annonce $id
+        $advert = $em
+          ->getRepository('OCPlatformBundle:Advert')
+          ->find($id)
+        ;
+
+        if (null === $advert) {
+            throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
+        }
+
+        // On avait déjà récupéré la liste des candidatures
+        $listApplications = $em
+          ->getRepository('OCPlatformBundle:Application')
+          ->findBy(array('advert' => $advert))
+        ;
+
+        // On récupère maintenant la liste des AdvertSkill
+        $listAdvertSkills = $em
+          ->getRepository('OCPlatformBundle:AdvertSkill')
+          ->findBy(array('advert' => $advert))
+        ;
+
+
+        return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
+          'advert'           => $advert,
+          'listApplications' => $listApplications,
+          'listAdvertSkills' => $listAdvertSkills
         ));
     }
 
@@ -111,7 +150,7 @@ class AdvertController extends Controller
         // Étape 2 : On « flush » tout ce qui a été persisté avant
         $em->flush();*/
 
-        // Création de l'entité Advert
+        /*// Création de l'entité Advert
         $advert = new Advert();
         $advert->setTitle('Recherche développeur Symfony.');
         $advert->setAuthor('Alexandre');
@@ -143,6 +182,59 @@ class AdvertController extends Controller
         $em->persist($application2);
 
         // Étape 2 : On « flush » tout ce qui a été persisté avant
+        $em->flush();*/
+
+        // On récupère l'EntityManager
+        $em = $this->getDoctrine()->getManager();
+
+        // Création de l'entité Advert
+        $advert = new Advert();
+        $advert->setTitle('Dev NodeJS');
+        $advert->setAuthor('Nick');
+        $advert->setContent("Nous recherchons un développeur NodeJS");
+
+        // On récupère toutes les compétences possibles
+        $listSkills = $em->getRepository('OCPlatformBundle:Skill')->findAll();
+
+        // Pour chaque compétence
+        foreach ($listSkills as $skill) {
+            // On crée une nouvelle « relation entre 1 annonce et 1 compétence »
+            $advertSkill = new AdvertSkill();
+
+            // On la lie à l'annonce, qui est ici toujours la même
+            $advertSkill->setAdvert($advert);
+            // On la lie à la compétence, qui change ici dans la boucle foreach
+            $advertSkill->setSkill($skill);
+
+            // Arbitrairement, on dit que chaque compétence est requise au niveau 'Expert'
+            $advertSkill->setLevel('Expert');
+
+            // Et bien sûr, on persiste cette entité de relation, propriétaire des deux autres relations
+            $em->persist($advertSkill);
+        }
+
+        // Création d'une première candidature
+        $application1 = new Application();
+        $application1->setAuthor('Marine');
+        $application1->setContent("J'ai toutes les qualités requises.");
+
+        // Création d'une deuxième candidature par exemple
+        $application2 = new Application();
+        $application2->setAuthor('Nick');
+        $application2->setContent("Je suis très motivé.");
+
+        // On lie les candidatures à l'annonce
+        $application1->setAdvert($advert);
+        $application2->setAdvert($advert);
+
+        $em->persist($application1);
+        $em->persist($application2);
+
+        // Doctrine ne connait pas encore l'entité $advert. Si vous n'avez pas défini la relation AdvertSkill
+        // avec un cascade persist (ce qui est le cas si vous avez utilisé mon code), alors on doit persister $advert
+        $em->persist($advert);
+
+        // On déclenche l'enregistrement
         $em->flush();
 
         // Reste de la méthode qu'on avait déjà écrit
