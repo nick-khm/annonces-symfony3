@@ -33,9 +33,9 @@ class Application
     private $date;
 
     /**
-     * @ORM\ManyToOne(targetEntity="OC\PlatformBundle\Entity\Advert")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    * @ORM\ManyToOne(targetEntity="OC\PlatformBundle\Entity\Advert", inversedBy="applications")
+    * @ORM\JoinColumn(nullable=false)
+    */
     private $advert;
 
     public function __construct()

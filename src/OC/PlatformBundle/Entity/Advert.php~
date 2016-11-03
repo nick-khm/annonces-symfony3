@@ -56,6 +56,7 @@ class Advert
 
     /**
      * @ORM\OneToOne(targetEntity="OC\PlatformBundle\Entity\Image", cascade={"persist"})
+     * @ORM\JoinColumn(onDelete="set null")
      */
     private $image;
 
@@ -64,6 +65,12 @@ class Advert
      * @ORM\JoinTable(name="oc_advert_category")
      */
     private $categories;
+
+    /**
+    * @ORM\OneToMany(targetEntity="OC\PlatformBundle\Entity\Application", mappedBy="advert")
+    */
+    private $applications; // Notez le « s », une annonce est liée à plusieurs candidatures
+
 
     public function __construct()
     {
