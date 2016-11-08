@@ -88,6 +88,8 @@ class AdvertController extends Controller
           ->find($id)
         ;
 
+        echo $advert->getSlug();
+
         if (null === $advert) {
             throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
         }
