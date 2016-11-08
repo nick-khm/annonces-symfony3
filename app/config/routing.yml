@@ -1,5 +1,5 @@
 core:
-    resource: "@CoreBundle/Resources/config/routing.yml"
+    resource: "@OCCoreBundle/Resources/config/routing.yml"
     prefix:   /
 
 oc_platform:

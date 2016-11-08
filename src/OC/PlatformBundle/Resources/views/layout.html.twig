@@ -1,4 +1,4 @@
-{% extends "CoreBundle::layout.html.twig" %}
+{% extends "OCCoreBundle::layout.html.twig" %}
 
 {% block title %}
 Annonces - {{ parent() }}
@@ -7,7 +7,7 @@ Annonces - {{ parent() }}
 {% block menu %}
 <h3>Les annonces</h3>
 <ul class="nav nav-pills nav-stacked">
-    <li><a href="{{ path('core_homepage') }}">Accueil</a></li>
+    <li><a href="{{ path('oc_core_homepage') }}">Accueil</a></li>
     <li><a href="{{ path('oc_platform_home') }}">Annonces</a></li>
     <li><a href="{{ path('oc_platform_add') }}">Ajouter une annonce</a></li>
 </ul>

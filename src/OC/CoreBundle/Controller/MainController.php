@@ -1,6 +1,6 @@
 <?php
 
-namespace CoreBundle\Controller;
+namespace OC\CoreBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +16,7 @@ class MainController extends Controller
      */
     public function indexAction(Request $request)
     {
-        return $this->render('CoreBundle:Main:index.html.twig');
+        return $this->render('OCCoreBundle:Main:index.html.twig');
     }
 
     /**
@@ -29,6 +29,6 @@ class MainController extends Controller
         $session = $request->getSession();
         $session->getFlashBag()
             ->add('flash_msgs', "La page de contact n'est pas encore disponible, merci de revenir plus tard.");
-        return $this->redirectToRoute('core_homepage');
+        return $this->redirectToRoute('oc_core_homepage');
     }
 }

@@ -6,7 +6,7 @@ namespace OC\PlatformBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="OC\PlatformBundle\Entity\SkillRepository")
+ * @ORM\Entity(repositoryClass="OC\PlatformBundle\Repository\SkillRepository")
  * @ORM\Table(name="oc_skill")
  */
 class Skill

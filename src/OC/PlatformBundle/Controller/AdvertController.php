@@ -271,7 +271,7 @@ class AdvertController extends Controller
 
         // On déclenche la modification
         $em->flush();
-        return $this->redirectToRoute('core_homepage');
+        return $this->redirectToRoute('oc_core_homepage');
         // return $this->render('OCPlatformBundle:Advert:delete.html.twig');
     }
 
