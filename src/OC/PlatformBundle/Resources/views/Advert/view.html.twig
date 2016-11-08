@@ -38,6 +38,7 @@
   </div>
   {% endif %}
 
+  <h3>Nombre de candidature : <b>{{advert.nbApplications}}</b></h3>
   <ul class="list-group">
     {% for candidat in listApplications %}
     <li class="list-group-item">
@@ -61,5 +62,13 @@
       Supprimer l'annonce
     </a>
   </p>
+
+  <div style="background: yellow;">
+  <ul>
+    {% for test in tests %}
+      <li>{{test.title}}</li>
+    {% endfor %}
+  </ul>
+  </div>
 
 {% endblock %}
